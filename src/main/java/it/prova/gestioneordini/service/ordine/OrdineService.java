@@ -2,7 +2,9 @@ package it.prova.gestioneordini.service.ordine;
 
 import java.util.List;
 
+import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
 import it.prova.gestioneordini.dao.ordine.OrdineDAO;
+import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Ordine;
 
 public interface OrdineService {
@@ -18,6 +20,11 @@ public interface OrdineService {
 
 	public void rimuovi(Ordine ordineInstance) throws Exception;
 
+	public void collegaOrdineEArticolo(Articolo articoloInstance, Ordine ordineInstance) throws Exception;
+
 	// per injection
 	public void setOrdineDAO(OrdineDAO ordineDAO);
+
+	public void setArticoloDAO(ArticoloDAO articoloDAO);
+
 }

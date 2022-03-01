@@ -52,6 +52,8 @@ public class TestGestioneOrdini {
 
 			testScollegaArticoloECategoria(articoloServiceInstance, categoriaServiceInstance, ordineServiceInstance);
 
+			testCollegaOrdineEArticolo(articoloServiceInstance, categoriaServiceInstance, ordineServiceInstance);
+
 			// TODO: TESTARE TUTTO IL CRUD
 
 			System.out.println(
@@ -292,6 +294,29 @@ public class TestGestioneOrdini {
 			throw new RuntimeException("testScollegaArticoloECategoria fallito: categoria non scollegata ");
 
 		System.out.println(".......testScollegaArticoloECategoria fine: PASSED.............");
+	}
+
+	private static void testCollegaOrdineEArticolo(ArticoloService articoloServiceInstance,
+			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testCollegaOrdineEArticolo inizio.............");
+
+		Ordine nuovoOrdine = new Ordine("nomeDestinatario1", "indirizzoDestinatario1", new Date());
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		Articolo articoloInstance = new Articolo("descrizione1", "numeroSeriale1", 14,
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2019"));
+		articoloInstance.setOrdine(nuovoOrdine);
+		articoloServiceInstance.inserisciNuovo(articoloInstance);
+		if (articoloInstance.getId() == null)
+			throw new RuntimeException("testCollegaOrdineEArticolo fallito ");
+
+		ordineServiceInstance.collegaOrdineEArticolo(articoloInstance, nuovoOrdine);
+
+		Ordine ordineReloaded = ordineServiceInstance.caricaSingoloElementoEagerArticoli(nuovoOrdine.getId());
+
+		if (ordineReloaded.getArticoli().isEmpty())
+			throw new RuntimeException("testCollegaOrdineEArticolo fallito: categoria non collegata ");
+
+		System.out.println(".......testCollegaOrdineEArticolo fine: PASSED.............");
 	}
 
 }
