@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 
 import it.prova.gestioneordini.dao.EntityManagerUtil;
 import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
+import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.exception.ArticoloConCategoriaException;
 import it.prova.gestioneordini.exception.ArticoloSenzaOrdineException;
 import it.prova.gestioneordini.model.Articolo;
@@ -13,6 +14,7 @@ import it.prova.gestioneordini.model.Categoria;
 
 public class ArticoloServiceImpl implements ArticoloService {
 	private ArticoloDAO articoloDAO;
+	private CategoriaDAO categoriaDAO;
 
 	@Override
 	public List<Articolo> listAll() throws Exception {
@@ -161,6 +163,12 @@ public class ArticoloServiceImpl implements ArticoloService {
 	}
 
 	@Override
+	public void setCategoriaDAO(CategoriaDAO categoriaDAO) {
+		this.categoriaDAO = categoriaDAO;
+
+	}
+
+	@Override
 	public void collegaArticoloECategoria(Articolo articoloInstance, Categoria categoriaInstance) throws Exception {
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
@@ -174,6 +182,33 @@ public class ArticoloServiceImpl implements ArticoloService {
 			categoriaInstance = entityManager.merge(categoriaInstance);
 
 			articoloInstance.addToCategorie(categoriaInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public void scollegaArticoloECategoria(Long articoloId, Long categoriaId) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+
+			articoloDAO.setEntityManager(entityManager);
+
+			categoriaDAO.setEntityManager(entityManager);
+
+			Articolo articoloInstance = articoloDAO.get(articoloId);
+
+			Categoria categoriaInstance = categoriaDAO.get(categoriaId);
+
+			articoloInstance.removeFromCategorie(categoriaInstance);
 
 			entityManager.getTransaction().commit();
 		} catch (Exception e) {
