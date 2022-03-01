@@ -9,6 +9,7 @@ import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
 import it.prova.gestioneordini.exception.ArticoloConCategoriaException;
 import it.prova.gestioneordini.exception.ArticoloSenzaOrdineException;
 import it.prova.gestioneordini.model.Articolo;
+import it.prova.gestioneordini.model.Categoria;
 
 public class ArticoloServiceImpl implements ArticoloService {
 	private ArticoloDAO articoloDAO;
@@ -157,6 +158,31 @@ public class ArticoloServiceImpl implements ArticoloService {
 	public void setArticoloDAO(ArticoloDAO articoloDAO) {
 		this.articoloDAO = articoloDAO;
 
+	}
+
+	@Override
+	public void collegaArticoloECategoria(Articolo articoloInstance, Categoria categoriaInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+
+			articoloDAO.setEntityManager(entityManager);
+
+			articoloInstance = entityManager.merge(articoloInstance);
+
+			categoriaInstance = entityManager.merge(categoriaInstance);
+
+			articoloInstance.addToCategorie(categoriaInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 }

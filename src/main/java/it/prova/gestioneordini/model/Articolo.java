@@ -135,6 +135,16 @@ public class Articolo {
 		this.updateDateTime = updateDateTime;
 	}
 
+	public void addToCategorie(Categoria categoriaInstance) {
+		this.categorie.add(categoriaInstance);
+		categoriaInstance.getArticoli().add(this);
+	}
+
+	public void removeFromCategorie(Categoria categoriaInstance) {
+		this.categorie.remove(categoriaInstance);
+		categoriaInstance.getArticoli().remove(this);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(numeroSeriale);
