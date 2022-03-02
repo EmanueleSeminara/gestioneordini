@@ -29,6 +29,8 @@ public interface OrdineService {
 
 	public List<Ordine> cercaTuttiGliOrdiniConCategoria(Categoria categoriaInput) throws Exception;
 
+	public Ordine cercaOrdinePiuRecenteConCategoria(Categoria categoriaInput) throws Exception;
+
 	// per injection
 	public void setOrdineDAO(OrdineDAO ordineDAO);
 

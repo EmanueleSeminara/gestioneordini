@@ -61,10 +61,13 @@ public class TestGestioneOrdini {
 			testCercaTuttiGliOrdiniConCategoria(articoloServiceInstance, categoriaServiceInstance,
 					ordineServiceInstance);
 
-			testCercaTuttiLeCategorieDistinteConOrdine(articoloServiceInstance, categoriaServiceInstance,
+			testCercaTutteLeCategorieDistinteConOrdine(articoloServiceInstance, categoriaServiceInstance,
 					ordineServiceInstance);
 
 			testSommaPrezziPerCategoria(articoloServiceInstance, categoriaServiceInstance, ordineServiceInstance);
+
+			testCercaOrdinePiuRecenteConCategoria(articoloServiceInstance, categoriaServiceInstance,
+					ordineServiceInstance);
 
 			// TODO: TESTARE TUTTO IL CRUD
 
@@ -404,7 +407,7 @@ public class TestGestioneOrdini {
 		System.out.println(".......testCercaTuttiGliOrdiniConCategoria fine: PASSED.............");
 	}
 
-	public static void testCercaTuttiLeCategorieDistinteConOrdine(ArticoloService articoloServiceInstance,
+	public static void testCercaTutteLeCategorieDistinteConOrdine(ArticoloService articoloServiceInstance,
 			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
 		System.out.println(".......testCercaTuttiLeCategorieDistinteConOrdine inizio.............");
 
@@ -458,6 +461,35 @@ public class TestGestioneOrdini {
 		}
 
 		System.out.println(".......testSommaPrezziPerCategoria fine: PASSED.............");
+	}
+
+	public static void testCercaOrdinePiuRecenteConCategoria(ArticoloService articoloServiceInstance,
+			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testCercaOrdinePiuRecenteConCategoria inizio.............");
+
+		Ordine nuovoOrdine = new Ordine("nomeDestinatario1", "indirizzoDestinatario1", new Date());
+		Categoria nuovaCategoria = new Categoria("descrizione9", 14);
+		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
+		if (nuovaCategoria.getId() == null)
+			throw new RuntimeException("testCercaOrdinePiuRecenteConCategoria fallito ");
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null)
+			throw new RuntimeException("testCercaOrdinePiuRecenteConCategoria fallito ");
+		Articolo articoloInstance = new Articolo("descrizione1", "numeroSeriale1", 14,
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2019"));
+		articoloInstance.setOrdine(nuovoOrdine);
+
+		articoloServiceInstance.inserisciNuovo(articoloInstance);
+		if (articoloInstance.getId() == null)
+			throw new RuntimeException("testCercaOrdinePiuRecenteConCategoria fallito ");
+		articoloServiceInstance.collegaArticoloECategoria(articoloInstance, nuovaCategoria);
+
+		if (!ordineServiceInstance.cercaOrdinePiuRecenteConCategoria(nuovaCategoria).getId()
+				.equals(nuovoOrdine.getId())) {
+			throw new RuntimeException("testCercaOrdinePiuRecenteConCategoria fallito ");
+		}
+
+		System.out.println(".......testCercaOrdinePiuRecenteConCategoria fine: PASSED.............");
 	}
 
 }
