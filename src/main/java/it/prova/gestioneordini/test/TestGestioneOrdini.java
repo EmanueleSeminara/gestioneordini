@@ -69,6 +69,9 @@ public class TestGestioneOrdini {
 			testCercaOrdinePiuRecenteConCategoria(articoloServiceInstance, categoriaServiceInstance,
 					ordineServiceInstance);
 
+			testCercaTuttiICodiciDistintiPerData(articoloServiceInstance, categoriaServiceInstance,
+					ordineServiceInstance);
+
 			// TODO: TESTARE TUTTO IL CRUD
 
 			System.out.println(
@@ -428,7 +431,7 @@ public class TestGestioneOrdini {
 			throw new RuntimeException("testCercaTuttiLeCategorieDistinteConOrdine fallito ");
 		articoloServiceInstance.collegaArticoloECategoria(articoloInstance, nuovaCategoria);
 
-		if (categoriaServiceInstance.cercaTuttiLeCategorieDistinteConOrdine(nuovoOrdine).size() != 1) {
+		if (categoriaServiceInstance.cercaTutteLeCategorieDistinteConOrdine(nuovoOrdine).size() != 1) {
 			throw new RuntimeException("testCercaTuttiLeCategorieDistinteConOrdine fallito ");
 		}
 
@@ -490,6 +493,36 @@ public class TestGestioneOrdini {
 		}
 
 		System.out.println(".......testCercaOrdinePiuRecenteConCategoria fine: PASSED.............");
+	}
+
+	public static void testCercaTuttiICodiciDistintiPerData(ArticoloService articoloServiceInstance,
+			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testCercaTuttiICodiciDistintiPerData inizio.............");
+
+		Ordine nuovoOrdine = new Ordine("nomeDestinatario1", "indirizzoDestinatario1",
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/02/2022"));
+		Categoria nuovaCategoria = new Categoria("descrizione9", 14);
+		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
+		if (nuovaCategoria.getId() == null)
+			throw new RuntimeException("testCercaTuttiICodiciDistintiPerData fallito ");
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null)
+			throw new RuntimeException("testCercaTuttiICodiciDistintiPerData fallito ");
+		Articolo articoloInstance = new Articolo("descrizione1", "numeroSeriale1", 14,
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2019"));
+		articoloInstance.setOrdine(nuovoOrdine);
+
+		articoloServiceInstance.inserisciNuovo(articoloInstance);
+		if (articoloInstance.getId() == null)
+			throw new RuntimeException("testCercaTuttiICodiciDistintiPerData fallito ");
+		articoloServiceInstance.collegaArticoloECategoria(articoloInstance, nuovaCategoria);
+
+		if (categoriaServiceInstance
+				.cercaTuttiICodiciDistintiPerData(new SimpleDateFormat("dd/MM/yyyy").parse("24/02/2022")).size() != 1) {
+			throw new RuntimeException("testCercaTuttiICodiciDistintiPerData fallito ");
+		}
+
+		System.out.println(".......testCercaTuttiICodiciDistintiPerData fine: PASSED.............");
 	}
 
 }

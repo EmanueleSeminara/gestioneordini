@@ -1,5 +1,6 @@
 package it.prova.gestioneordini.service.categoria;
 
+import java.util.Date;
 import java.util.List;
 
 import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
@@ -19,7 +20,9 @@ public interface CategoriaService {
 
 	public void rimuovi(Categoria categoriaInstance) throws Exception;
 
-	public List<Categoria> cercaTuttiLeCategorieDistinteConOrdine(Ordine ordineInput) throws Exception;
+	public List<Categoria> cercaTutteLeCategorieDistinteConOrdine(Ordine ordineInput) throws Exception;
+
+	public List<Integer> cercaTuttiICodiciDistintiPerData(Date dateInput) throws Exception;
 
 	// per injection
 	public void setCategoriaDAO(CategoriaDAO categoriaDAO);

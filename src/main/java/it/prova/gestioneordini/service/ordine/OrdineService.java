@@ -3,6 +3,7 @@ package it.prova.gestioneordini.service.ordine;
 import java.util.List;
 
 import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
+import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.dao.ordine.OrdineDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
@@ -35,5 +36,7 @@ public interface OrdineService {
 	public void setOrdineDAO(OrdineDAO ordineDAO);
 
 	public void setArticoloDAO(ArticoloDAO articoloDAO);
+
+	public void setCategoriaDAO(CategoriaDAO categoriaDAO);
 
 }

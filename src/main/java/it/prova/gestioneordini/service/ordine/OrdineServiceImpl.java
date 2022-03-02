@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 
 import it.prova.gestioneordini.dao.EntityManagerUtil;
 import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
+import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.dao.ordine.OrdineDAO;
 import it.prova.gestioneordini.exception.OrdineConArticoliException;
 import it.prova.gestioneordini.model.Articolo;
@@ -15,6 +16,7 @@ import it.prova.gestioneordini.model.Ordine;
 public class OrdineServiceImpl implements OrdineService {
 	private OrdineDAO ordineDAO;
 	private ArticoloDAO articoloDAO;
+	private CategoriaDAO categoriaDAO;
 
 	@Override
 	public List<Ordine> listAll() throws Exception {
@@ -217,10 +219,18 @@ public class OrdineServiceImpl implements OrdineService {
 			// uso l'injection per il dao
 			ordineDAO.setEntityManager(entityManager);
 			articoloDAO.setEntityManager(entityManager);
+			categoriaDAO.setEntityManager(entityManager);
 
 			Ordine ordineDaRimuovere = ordineDAO.findByIdFetchingArticoli(ordineInstance.getId());
 			if (!ordineDaRimuovere.getArticoli().isEmpty()) {
 				for (Articolo articoloItem : ordineDaRimuovere.getArticoli()) {
+					for (Categoria categoriaItem : articoloItem.getCategorie()) {
+						Articolo articoloInstance = articoloDAO.get(articoloItem.getId());
+
+						Categoria categoriaInstance = categoriaDAO.get(categoriaItem.getId());
+
+						articoloInstance.removeFromCategorie(categoriaInstance);
+					}
 					articoloDAO.delete(articoloDAO.get(articoloItem.getId()));
 				}
 			}
@@ -271,6 +281,11 @@ public class OrdineServiceImpl implements OrdineService {
 		} finally {
 			EntityManagerUtil.closeEntityManager(entityManager);
 		}
+	}
+
+	@Override
+	public void setCategoriaDAO(CategoriaDAO categoriaDAO) {
+		this.categoriaDAO = categoriaDAO;
 	}
 
 }

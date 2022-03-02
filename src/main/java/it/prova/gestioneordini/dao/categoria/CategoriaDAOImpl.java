@@ -1,5 +1,7 @@
 package it.prova.gestioneordini.dao.categoria;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -66,6 +68,19 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 		TypedQuery<Categoria> query = entityManager.createQuery(
 				"select distinct c from Categoria c join c.articoli a join a.ordine o where o.id= :idOrdine",
 				Categoria.class).setParameter("idOrdine", ordineInput.getId());
+
+		return query.getResultList();
+	}
+
+	@Override
+	public List<Integer> findAllCodiceByDate(Date dateInput) throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dateInput);
+		TypedQuery<Integer> query = entityManager.createQuery(
+				"select distinct c.codice from Categoria c join c.articoli a join a.ordine o where EXTRACT(YEAR from o.dataSpedizione) =:annoInput and EXTRACT(MONTH from o.dataSpedizione) =:meseInput",
+				Integer.class);
+		query.setParameter("annoInput", cal.get(Calendar.YEAR));
+		query.setParameter("meseInput", cal.get(Calendar.MONTH) + 1);
 
 		return query.getResultList();
 	}
