@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public class CategoriaDAOImpl implements CategoriaDAO {
 	private EntityManager entityManager;
@@ -58,6 +59,15 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 				.setParameter("idCategoria", idInput);
 
 		return query.getResultList().stream().findFirst().orElse(null);
+	}
+
+	@Override
+	public List<Categoria> findAllDistinctCategoryByOrdine(Ordine ordineInput) throws Exception {
+		TypedQuery<Categoria> query = entityManager.createQuery(
+				"select distinct c from Categoria c join c.articoli a join a.ordine o where o.id= :idOrdine",
+				Categoria.class).setParameter("idOrdine", ordineInput.getId());
+
+		return query.getResultList();
 	}
 
 }
