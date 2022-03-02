@@ -22,6 +22,10 @@ public interface OrdineService {
 
 	public void collegaOrdineEArticolo(Articolo articoloInstance, Ordine ordineInstance) throws Exception;
 
+	public void scollegaOrdineEArticolo(Long ordineId) throws Exception;
+
+	public void rimuoviForzatamente(Ordine ordineInstance) throws Exception;
+
 	// per injection
 	public void setOrdineDAO(OrdineDAO ordineDAO);
 

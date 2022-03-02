@@ -184,4 +184,56 @@ public class OrdineServiceImpl implements OrdineService {
 		this.articoloDAO = articoloDAO;
 	}
 
+	@Override
+	public void scollegaOrdineEArticolo(Long articoloId) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+
+			articoloDAO.setEntityManager(entityManager);
+
+			articoloDAO.delete(articoloDAO.get(articoloId));
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public void rimuoviForzatamente(Ordine ordineInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			ordineDAO.setEntityManager(entityManager);
+			articoloDAO.setEntityManager(entityManager);
+
+			Ordine ordineDaRimuovere = ordineDAO.findByIdFetchingArticoli(ordineInstance.getId());
+			if (!ordineDaRimuovere.getArticoli().isEmpty()) {
+				for (Articolo articoloItem : ordineDaRimuovere.getArticoli()) {
+					articoloDAO.delete(articoloDAO.get(articoloItem.getId()));
+				}
+			}
+			// eseguo quello che realmente devo fare
+			ordineDAO.delete(ordineInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
 }

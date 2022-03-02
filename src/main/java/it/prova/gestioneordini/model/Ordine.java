@@ -109,7 +109,7 @@ public class Ordine {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(articoli, dataSpedizione, id, indirizzoSpedizione, nomeDestinatario);
+		return Objects.hash(dataSpedizione, id, indirizzoSpedizione, nomeDestinatario);
 	}
 
 	@Override
@@ -121,15 +121,15 @@ public class Ordine {
 		if (getClass() != obj.getClass())
 			return false;
 		Ordine other = (Ordine) obj;
-		return Objects.equals(articoli, other.articoli) && Objects.equals(dataSpedizione, other.dataSpedizione)
-				&& Objects.equals(id, other.id) && Objects.equals(indirizzoSpedizione, other.indirizzoSpedizione)
+		return Objects.equals(dataSpedizione, other.dataSpedizione) && Objects.equals(id, other.id)
+				&& Objects.equals(indirizzoSpedizione, other.indirizzoSpedizione)
 				&& Objects.equals(nomeDestinatario, other.nomeDestinatario);
 	}
 
 	@Override
 	public String toString() {
 		return "Ordine [id=" + id + ", nomeDestinatario=" + nomeDestinatario + ", indirizzoSpedizione="
-				+ indirizzoSpedizione + ", dataSpedizione=" + dataSpedizione + ", articoli=" + articoli + "]";
+				+ indirizzoSpedizione + ", dataSpedizione=" + dataSpedizione + "]";
 	}
 
 }

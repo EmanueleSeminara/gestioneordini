@@ -54,6 +54,10 @@ public class TestGestioneOrdini {
 
 			testCollegaOrdineEArticolo(articoloServiceInstance, categoriaServiceInstance, ordineServiceInstance);
 
+			testScollegaOrdineEArticolo(articoloServiceInstance, categoriaServiceInstance, ordineServiceInstance);
+
+			testRimozioneForzataOrdine(ordineServiceInstance);
+
 			// TODO: TESTARE TUTTO IL CRUD
 
 			System.out.println(
@@ -317,6 +321,51 @@ public class TestGestioneOrdini {
 			throw new RuntimeException("testCollegaOrdineEArticolo fallito: categoria non collegata ");
 
 		System.out.println(".......testCollegaOrdineEArticolo fine: PASSED.............");
+	}
+
+	private static void testScollegaOrdineEArticolo(ArticoloService articoloServiceInstance,
+			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testScollegaOrdineEArticolo inizio.............");
+
+		Ordine nuovoOrdine = new Ordine("nomeDestinatario1", "indirizzoDestinatario1", new Date());
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		Articolo articoloInstance = new Articolo("descrizione1", "numeroSeriale1", 14,
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2019"));
+		articoloInstance.setOrdine(nuovoOrdine);
+		articoloServiceInstance.inserisciNuovo(articoloInstance);
+		if (articoloInstance.getId() == null)
+			throw new RuntimeException("testScollegaOrdineEArticolo fallito ");
+
+		ordineServiceInstance.collegaOrdineEArticolo(articoloInstance, nuovoOrdine);
+		Ordine ordineReloaded = ordineServiceInstance.caricaSingoloElementoEagerArticoli(nuovoOrdine.getId());
+
+		if (ordineReloaded.getArticoli().isEmpty())
+			throw new RuntimeException("testScollegaOrdineEArticolo fallito: articolo non collegato ");
+
+		ordineServiceInstance.scollegaOrdineEArticolo(articoloInstance.getId());
+
+		ordineReloaded = ordineServiceInstance.caricaSingoloElementoEagerArticoli(ordineReloaded.getId());
+		if (!ordineReloaded.getArticoli().isEmpty())
+			throw new RuntimeException("testScollegaOrdineEArticolo fallito: articolo non scollegato ");
+
+		System.out.println(".......testScollegaOrdineEArticolo fine: PASSED.............");
+	}
+
+	private static void testRimozioneForzataOrdine(OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testRimozioneForzataOrdine inizio.............");
+
+		Ordine nuovaOrdine = new Ordine("nomeDestinatario3", "indirizzoDestinatario3", new Date());
+		ordineServiceInstance.inserisciNuovo(nuovaOrdine);
+
+		if (nuovaOrdine.getId() == null)
+			throw new RuntimeException("testRimozioneForzataOrdine fallito ");
+
+		ordineServiceInstance.rimuoviForzatamente(nuovaOrdine);
+		if (ordineServiceInstance.caricaSingoloElemento(nuovaOrdine.getId()) != null) {
+			throw new RuntimeException("testRimozioneForzataOrdine fallito: Ordine non rimosso");
+		}
+
+		System.out.println(".......testRimozioneForzataOrdine fine: PASSED.............");
 	}
 
 }
