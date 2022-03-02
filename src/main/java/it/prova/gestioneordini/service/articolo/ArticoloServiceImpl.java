@@ -236,4 +236,57 @@ public class ArticoloServiceImpl implements ArticoloService {
 		}
 	}
 
+	@Override
+	public Long sommaPrezziPernomeDestinatarioInput(String nomeDestinatarioInputInput) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			articoloDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return articoloDAO.sumAllByDestinatario(nomeDestinatarioInputInput);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public void rimuoviForzatamente(Articolo articoloInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			articoloDAO.setEntityManager(entityManager);
+			categoriaDAO.setEntityManager(entityManager);
+
+			Articolo articoloDaRimuovere = articoloDAO.findByIdFetchingCategorieOrdini(articoloInstance.getId());
+			if (!articoloDaRimuovere.getCategorie().isEmpty()) {
+				for (Categoria categoriaItem : articoloDaRimuovere.getCategorie()) {
+					Articolo articoloDaRimuovereInstance = articoloDAO.get(articoloDaRimuovere.getId());
+
+					Categoria categoriaInstance = categoriaDAO.get(categoriaItem.getId());
+
+					articoloDaRimuovereInstance.removeFromCategorie(categoriaInstance);
+				}
+			}
+			// eseguo quello che realmente devo fare
+			articoloDAO.delete(articoloDaRimuovere);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
 }

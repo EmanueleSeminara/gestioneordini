@@ -32,6 +32,8 @@ public interface OrdineService {
 
 	public Ordine cercaOrdinePiuRecenteConCategoria(Categoria categoriaInput) throws Exception;
 
+	public List<String> cercaTuttiGliIndirizziConSerialeCheContiene(String serialeInput) throws Exception;
+
 	// per injection
 	public void setOrdineDAO(OrdineDAO ordineDAO);
 

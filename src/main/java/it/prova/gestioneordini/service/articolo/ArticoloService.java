@@ -26,6 +26,10 @@ public interface ArticoloService {
 
 	public Long sommaPrezziPerCategoria(Categoria categoriaInput) throws Exception;
 
+	public Long sommaPrezziPernomeDestinatarioInput(String nomeDestinatarioInputInput) throws Exception;
+
+	public void rimuoviForzatamente(Articolo articoloInstance) throws Exception;
+
 	// per injection
 	public void setArticoloDAO(ArticoloDAO articoloDAO);
 

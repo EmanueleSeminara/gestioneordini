@@ -70,4 +70,13 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 		return query.getSingleResult();
 	}
 
+	@Override
+	public Long sumAllByDestinatario(String nomeDestinatarioInput) throws Exception {
+		TypedQuery<Long> query = entityManager.createQuery(
+				"select sum(a.prezzoSingolo) from Articolo a join a.ordine o where o.nomeDestinatario= :nomeDestinatario",
+				Long.class).setParameter("nomeDestinatario", nomeDestinatarioInput);
+
+		return query.getSingleResult();
+	}
+
 }

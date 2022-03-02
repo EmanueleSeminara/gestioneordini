@@ -72,6 +72,12 @@ public class TestGestioneOrdini {
 			testCercaTuttiICodiciDistintiPerData(articoloServiceInstance, categoriaServiceInstance,
 					ordineServiceInstance);
 
+			testSommaPrezziPernomeDestinatarioInput(articoloServiceInstance, categoriaServiceInstance,
+					ordineServiceInstance);
+
+			testCercaTuttiGliIndirizziConSerialeCheContiene(articoloServiceInstance, categoriaServiceInstance,
+					ordineServiceInstance);
+
 			// TODO: TESTARE TUTTO IL CRUD
 
 			System.out.println(
@@ -523,6 +529,74 @@ public class TestGestioneOrdini {
 		}
 
 		System.out.println(".......testCercaTuttiICodiciDistintiPerData fine: PASSED.............");
+	}
+
+	public static void testSommaPrezziPernomeDestinatarioInput(ArticoloService articoloServiceInstance,
+			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testSommaPrezziPernomeDestinatarioInput inizio.............");
+
+		Ordine nuovoOrdine = new Ordine("nomeDestinatario101", "indirizzoDestinatario1", new Date());
+		Categoria nuovaCategoria = new Categoria("descrizione9", 144);
+		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
+		if (nuovaCategoria.getId() == null)
+			throw new RuntimeException("testSommaPrezziPernomeDestinatarioInput fallito ");
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null)
+			throw new RuntimeException("testSommaPrezziPernomeDestinatarioInput fallito ");
+		Articolo articoloInstance = new Articolo("descrizione1", "numeroSeriale1", 144,
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2019"));
+		articoloInstance.setOrdine(nuovoOrdine);
+
+		articoloServiceInstance.inserisciNuovo(articoloInstance);
+		if (articoloInstance.getId() == null)
+			throw new RuntimeException("testSommaPrezziPernomeDestinatarioInput fallito ");
+		articoloServiceInstance.collegaArticoloECategoria(articoloInstance, nuovaCategoria);
+
+		if (articoloServiceInstance.sommaPrezziPernomeDestinatarioInput(nuovoOrdine.getNomeDestinatario()) != 144) {
+			throw new RuntimeException("testSommaPrezziPernomeDestinatarioInput fallito ");
+		}
+
+		articoloServiceInstance.rimuoviForzatamente(articoloInstance);
+		categoriaServiceInstance.rimuovi(nuovaCategoria);
+		ordineServiceInstance.rimuoviForzatamente(nuovoOrdine);
+
+		System.out.println(".......testSommaPrezziPernomeDestinatarioInput fine: PASSED.............");
+	}
+
+	public static void testCercaTuttiGliIndirizziConSerialeCheContiene(ArticoloService articoloServiceInstance,
+			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testCercaTuttiGliIndirizziConSerialeCheContiene inizio.............");
+
+		Ordine nuovoOrdine = new Ordine("nomeDestinatario10", "indirizzoDestinatario1", new Date());
+		Categoria nuovaCategoria = new Categoria("descrizione9", 144);
+		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
+		if (nuovaCategoria.getId() == null)
+			throw new RuntimeException("testCercaTuttiGliIndirizziConSerialeCheContiene fallito ");
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null)
+			throw new RuntimeException("testCercaTuttiGliIndirizziConSerialeCheContiene fallito ");
+		Articolo articoloInstance = new Articolo("descrizione1", "numeroSeriale11", 144,
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2019"));
+		articoloInstance.setOrdine(nuovoOrdine);
+
+		articoloServiceInstance.inserisciNuovo(articoloInstance);
+		if (articoloInstance.getId() == null)
+			throw new RuntimeException("testCercaTuttiGliIndirizziConSerialeCheContiene fallito ");
+		articoloServiceInstance.collegaArticoloECategoria(articoloInstance, nuovaCategoria);
+
+		System.out.println(
+				articoloServiceInstance.sommaPrezziPernomeDestinatarioInput(nuovoOrdine.getNomeDestinatario()));
+
+		if (ordineServiceInstance.cercaTuttiGliIndirizziConSerialeCheContiene(articoloInstance.getNumeroSeriale())
+				.size() != 1) {
+			throw new RuntimeException("testCercaTuttiGliIndirizziConSerialeCheContiene fallito ");
+		}
+
+		articoloServiceInstance.rimuoviForzatamente(articoloInstance);
+		categoriaServiceInstance.rimuovi(nuovaCategoria);
+		ordineServiceInstance.rimuoviForzatamente(nuovoOrdine);
+
+		System.out.println(".......testCercaTuttiGliIndirizziConSerialeCheContiene fine: PASSED.............");
 	}
 
 }

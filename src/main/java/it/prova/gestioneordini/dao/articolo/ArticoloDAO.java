@@ -8,4 +8,7 @@ public interface ArticoloDAO extends IBaseDAO<Articolo> {
 	public Articolo findByIdFetchingCategorieOrdini(Long id) throws Exception;
 
 	public Long sumAllByCategoria(Categoria categoriaInput) throws Exception;
+
+	public Long sumAllByDestinatario(String nomeDestinatarioInput) throws Exception;
+
 }

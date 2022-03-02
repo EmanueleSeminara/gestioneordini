@@ -288,4 +288,22 @@ public class OrdineServiceImpl implements OrdineService {
 		this.categoriaDAO = categoriaDAO;
 	}
 
+	@Override
+	public List<String> cercaTuttiGliIndirizziConSerialeCheContiene(String serialeInput) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			ordineDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return ordineDAO.findIndirizzoByContainsStringInSeriale(serialeInput);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
 }

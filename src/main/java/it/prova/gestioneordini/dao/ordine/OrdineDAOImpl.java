@@ -79,4 +79,13 @@ public class OrdineDAOImpl implements OrdineDAO {
 		return query.getResultList().stream().findFirst().orElse(null);
 	}
 
+	@Override
+	public List<String> findIndirizzoByContainsStringInSeriale(String serialeInput) throws Exception {
+		TypedQuery<String> query = entityManager.createQuery(
+				"select distinct o.indirizzoSpedizione from Ordine o join o.articoli a where a.numeroSeriale like :numeroSeriale",
+				String.class).setParameter("numeroSeriale", "%" + serialeInput + "%");
+
+		return query.getResultList();
+	}
+
 }
