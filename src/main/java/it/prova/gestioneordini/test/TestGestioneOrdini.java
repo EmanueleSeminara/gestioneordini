@@ -58,6 +58,9 @@ public class TestGestioneOrdini {
 
 			testRimozioneForzataOrdine(ordineServiceInstance);
 
+			testCercaTuttiGliOrdiniConCategoria(articoloServiceInstance, categoriaServiceInstance,
+					ordineServiceInstance);
+
 			// TODO: TESTARE TUTTO IL CRUD
 
 			System.out.println(
@@ -366,6 +369,34 @@ public class TestGestioneOrdini {
 		}
 
 		System.out.println(".......testRimozioneForzataOrdine fine: PASSED.............");
+	}
+
+	public static void testCercaTuttiGliOrdiniConCategoria(ArticoloService articoloServiceInstance,
+			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testCercaTuttiGliOrdiniConCategoria inizio.............");
+
+		Ordine nuovoOrdine = new Ordine("nomeDestinatario1", "indirizzoDestinatario1", new Date());
+		Categoria nuovaCategoria = new Categoria("descrizione9", 14);
+		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
+		if (nuovaCategoria.getId() == null)
+			throw new RuntimeException("testCercaTuttiGliOrdiniConCategoria fallito ");
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null)
+			throw new RuntimeException("testCercaTuttiGliOrdiniConCategoria fallito ");
+		Articolo articoloInstance = new Articolo("descrizione1", "numeroSeriale1", 14,
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2019"));
+		articoloInstance.setOrdine(nuovoOrdine);
+
+		articoloServiceInstance.inserisciNuovo(articoloInstance);
+		if (articoloInstance.getId() == null)
+			throw new RuntimeException("testCercaTuttiGliOrdiniConCategoria fallito ");
+		articoloServiceInstance.collegaArticoloECategoria(articoloInstance, nuovaCategoria);
+
+		if (ordineServiceInstance.cercaTuttiGliOrdiniConCategoria(nuovaCategoria).size() != 1) {
+			throw new RuntimeException("testCercaTuttiGliOrdiniConCategoria fallito ");
+		}
+
+		System.out.println(".......testCercaTuttiGliOrdiniConCategoria fine: PASSED.............");
 	}
 
 }
