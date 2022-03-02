@@ -64,6 +64,8 @@ public class TestGestioneOrdini {
 			testCercaTuttiLeCategorieDistinteConOrdine(articoloServiceInstance, categoriaServiceInstance,
 					ordineServiceInstance);
 
+			testSommaPrezziPerCategoria(articoloServiceInstance, categoriaServiceInstance, ordineServiceInstance);
+
 			// TODO: TESTARE TUTTO IL CRUD
 
 			System.out.println(
@@ -428,6 +430,34 @@ public class TestGestioneOrdini {
 		}
 
 		System.out.println(".......testCercaTuttiLeCategorieDistinteConOrdine fine: PASSED.............");
+	}
+
+	public static void testSommaPrezziPerCategoria(ArticoloService articoloServiceInstance,
+			CategoriaService categoriaServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+		System.out.println(".......testSommaPrezziPerCategoria inizio.............");
+
+		Ordine nuovoOrdine = new Ordine("nomeDestinatario1", "indirizzoDestinatario1", new Date());
+		Categoria nuovaCategoria = new Categoria("descrizione9", 14);
+		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
+		if (nuovaCategoria.getId() == null)
+			throw new RuntimeException("testSommaPrezziPerCategoria fallito ");
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null)
+			throw new RuntimeException("testSommaPrezziPerCategoria fallito ");
+		Articolo articoloInstance = new Articolo("descrizione1", "numeroSeriale1", 14,
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2019"));
+		articoloInstance.setOrdine(nuovoOrdine);
+
+		articoloServiceInstance.inserisciNuovo(articoloInstance);
+		if (articoloInstance.getId() == null)
+			throw new RuntimeException("testSommaPrezziPerCategoria fallito ");
+		articoloServiceInstance.collegaArticoloECategoria(articoloInstance, nuovaCategoria);
+
+		if (articoloServiceInstance.sommaPrezziPerCategoria(nuovaCategoria) != 14) {
+			throw new RuntimeException("testSommaPrezziPerCategoria fallito ");
+		}
+
+		System.out.println(".......testSommaPrezziPerCategoria fine: PASSED.............");
 	}
 
 }

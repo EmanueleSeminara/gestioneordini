@@ -175,8 +175,6 @@ public class ArticoloServiceImpl implements ArticoloService {
 		try {
 			entityManager.getTransaction().begin();
 
-			articoloDAO.setEntityManager(entityManager);
-
 			articoloInstance = entityManager.merge(articoloInstance);
 
 			categoriaInstance = entityManager.merge(categoriaInstance);
@@ -213,6 +211,24 @@ public class ArticoloServiceImpl implements ArticoloService {
 			entityManager.getTransaction().commit();
 		} catch (Exception e) {
 			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public Long sommaPrezziPerCategoria(Categoria categoriaInput) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			articoloDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return articoloDAO.sumAllByCategoria(categoriaInput);
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {

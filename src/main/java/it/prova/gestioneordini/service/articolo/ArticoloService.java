@@ -24,6 +24,8 @@ public interface ArticoloService {
 
 	public void scollegaArticoloECategoria(Long articoloId, Long categoriaId) throws Exception;
 
+	public Long sommaPrezziPerCategoria(Categoria categoriaInput) throws Exception;
+
 	// per injection
 	public void setArticoloDAO(ArticoloDAO articoloDAO);
 
